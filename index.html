@@ -1,0 +1,635 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Trip Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Lora:wght@500;600;700&family=Nunito+Sans:wght@400;600;700&display=swap"
+    rel="stylesheet">
+
+  <style>
+    :root {
+      --bg: #FAFAF9;
+      --surface: #FFFFFF;
+      --text-main: #1C1917;
+      --text-muted: #78716C;
+      --accent: #854D0E;
+      --accent-light: #FEF3C7;
+      --success: #166534;
+      --danger: #991B1B;
+      --border: #E7E5E4;
+      --font-heading: 'Lora', serif;
+      --font-body: 'Nunito Sans', sans-serif;
+      --shadow-sm: 0 1px 3px rgba(0, 0, 0, 0.05);
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text-main);
+      font-family: var(--font-body);
+      line-height: 1.6;
+    }
+
+    /* Login */
+    #login-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      height: 100vh;
+      padding: 24px;
+      text-align: center;
+    }
+
+    #login-screen h1 {
+      font-family: var(--font-heading);
+      color: var(--accent);
+      margin-bottom: 8px;
+      font-size: 32px;
+    }
+
+    #login-screen input {
+      width: 100%;
+      max-width: 300px;
+      padding: 14px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      margin-bottom: 16px;
+      font-size: 16px;
+    }
+
+    #login-screen button {
+      width: 100%;
+      max-width: 300px;
+      padding: 14px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+    }
+
+    /* Main */
+    #main-app {
+      display: none;
+    }
+
+    header {
+      background-color: var(--surface);
+      padding: 24px;
+      border-bottom: 1px solid var(--border);
+      text-align: center;
+    }
+
+    header h1 {
+      font-family: var(--font-heading);
+      font-size: 24px;
+      font-weight: 600;
+    }
+
+    header p {
+      color: var(--text-muted);
+      font-size: 14px;
+      text-transform: uppercase;
+      letter-spacing: 1px;
+    }
+
+    nav {
+      display: flex;
+      overflow-x: auto;
+      background-color: var(--surface);
+      border-bottom: 1px solid var(--border);
+      position: sticky;
+      top: 0;
+      z-index: 10;
+      scrollbar-width: none;
+    }
+
+    nav::-webkit-scrollbar {
+      display: none;
+    }
+
+    .tab-btn {
+      flex: 0 0 auto;
+      padding: 16px 24px;
+      background: none;
+      border: none;
+      border-bottom: 3px solid transparent;
+      font-family: var(--font-body);
+      font-size: 15px;
+      font-weight: 600;
+      color: var(--text-muted);
+      cursor: pointer;
+    }
+
+    .tab-btn.active {
+      color: var(--accent);
+      border-bottom-color: var(--accent);
+    }
+
+    main {
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 24px 16px 64px 16px;
+    }
+
+    .card {
+      background-color: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 24px;
+      margin-bottom: 16px;
+      box-shadow: var(--shadow-sm);
+    }
+
+    .card-header {
+      border-bottom: 1px solid var(--border);
+      margin-bottom: 16px;
+      padding-bottom: 12px;
+    }
+
+    .card-title {
+      font-family: var(--font-heading);
+      font-size: 18px;
+      font-weight: 600;
+    }
+
+    .data-row {
+      display: flex;
+      margin-bottom: 12px;
+      font-size: 15px;
+    }
+
+    .data-label {
+      width: 120px;
+      flex-shrink: 0;
+      color: var(--text-muted);
+      font-weight: 600;
+    }
+
+    .data-value {
+      color: var(--text-main);
+      font-weight: 600;
+    }
+
+    .timeline-item {
+      position: relative;
+      padding-left: 24px;
+      margin-bottom: 24px;
+    }
+
+    .timeline-item::before {
+      content: '';
+      position: absolute;
+      left: 0;
+      top: 6px;
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background-color: var(--accent);
+    }
+
+    .badge {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 999px;
+      font-size: 12px;
+      font-weight: 700;
+      text-transform: uppercase;
+    }
+
+    .badge-accent {
+      background-color: var(--accent-light);
+      color: var(--accent);
+    }
+
+    /* Form */
+    .form-group {
+      margin-bottom: 16px;
+    }
+
+    .form-group label {
+      display: block;
+      font-size: 13px;
+      font-weight: 600;
+      color: var(--text-muted);
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      margin-bottom: 6px;
+    }
+
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+      width: 100%;
+      padding: 12px;
+      border: 1px solid var(--border);
+      border-radius: 8px;
+      font-size: 15px;
+      font-family: var(--font-body);
+      background: white;
+    }
+
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+      outline: none;
+      border-color: var(--accent);
+    }
+
+    .form-group textarea {
+      resize: vertical;
+      min-height: 60px;
+    }
+
+    .form-row {
+      display: flex;
+      gap: 12px;
+    }
+
+    .form-row>* {
+      flex: 1;
+    }
+
+    .btn-submit {
+      width: 100%;
+      padding: 14px;
+      background: var(--accent);
+      color: white;
+      border: none;
+      border-radius: 8px;
+      font-size: 16px;
+      font-weight: 700;
+      cursor: pointer;
+      margin-top: 8px;
+    }
+
+    .btn-submit:disabled {
+      background: #ccc;
+      cursor: not-allowed;
+    }
+
+    .file-input {
+      border: 2px dashed var(--border);
+      padding: 20px;
+      text-align: center;
+      border-radius: 8px;
+      cursor: pointer;
+    }
+
+    .file-input:hover {
+      border-color: var(--accent);
+      background: var(--accent-light);
+    }
+
+    .alert {
+      padding: 12px 16px;
+      border-radius: 8px;
+      margin-bottom: 16px;
+      font-size: 14px;
+    }
+
+    .alert-success {
+      background: #DCFCE7;
+      color: var(--success);
+    }
+
+    .alert-error {
+      background: #FEE2E2;
+      color: var(--danger);
+    }
+  </style>
+</head>
+
+<body>
+
+  <div id="login-screen">
+    <h1>Trip Portal</h1>
+    <p style="color: var(--text-muted); margin-bottom: 24px;">Enter the password provided by your EA.</p>
+    <input type="password" id="password-input" placeholder="Password">
+    <button onclick="attemptLogin()" id="login-btn">Unlock Portal</button>
+    <div id="login-error" style="color: red; margin-top: 16px; font-size: 14px;"></div>
+  </div>
+
+  <div id="main-app">
+    <header>
+      <h1 id="trip-title">Loading...</h1>
+      <p id="trip-dates"></p>
+    </header>
+    <nav id="tabs-container"></nav>
+    <main id="content"></main>
+  </div>
+
+  <script>
+    const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbwDb10TN3Uwc_hBKN3aQqcfzkykGffIsoNK0067blf_UwRNe4h8S0ATv17mhRyzFglm/exec";
+    const MAX_FILE_SIZE_MB = 5;
+
+    const urlParams = new URLSearchParams(window.location.search);
+    const tripId = urlParams.get('trip');
+    let tripData = null;
+    let tripPassword = null;
+
+    if (!tripId) {
+      document.getElementById('login-screen').innerHTML = '<h1>Missing Trip ID</h1><p>Please use the full link provided by your EA.</p>';
+    }
+
+    // Restore session from sessionStorage
+    const savedTrip = sessionStorage.getItem('tripData_' + tripId);
+    const savedPassword = sessionStorage.getItem('tripPassword_' + tripId);
+    if (savedTrip && savedPassword) {
+      tripData = JSON.parse(savedTrip);
+      tripPassword = savedPassword;
+      showApp();
+    }
+
+    function attemptLogin() {
+      const pwd = document.getElementById('password-input').value;
+      const errDiv = document.getElementById('login-error');
+      const btn = document.getElementById('login-btn');
+
+      if (!pwd) return;
+      errDiv.innerText = "";
+      btn.innerText = "Verifying...";
+      btn.disabled = true;
+
+      fetch(APPS_SCRIPT_URL, {
+        method: 'POST',
+        headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+        body: JSON.stringify({ action: 'login', tripId: tripId, password: pwd })
+      })
+        .then(r => r.json())
+        .then(data => {
+          if (data.error) {
+            errDiv.innerText = data.error;
+            btn.innerText = "Unlock Portal"; btn.disabled = false;
+          } else {
+            tripData = data;
+            tripPassword = pwd;
+            sessionStorage.setItem('tripData_' + tripId, JSON.stringify(data));
+            sessionStorage.setItem('tripPassword_' + tripId, pwd);
+            showApp();
+          }
+        })
+        .catch(err => {
+          errDiv.innerText = "Connection error.";
+          btn.innerText = "Unlock Portal"; btn.disabled = false;
+        });
+    }
+
+    document.getElementById('password-input').addEventListener('keypress', function (e) {
+      if (e.key === 'Enter') attemptLogin();
+    });
+
+    function showApp() {
+      document.getElementById('login-screen').style.display = 'none';
+      document.getElementById('main-app').style.display = 'block';
+      document.getElementById('trip-title').innerText = tripData.trip_name;
+      document.getElementById('trip-dates').innerText = tripData.start_date + ' — ' + tripData.end_date;
+
+      let tabs = [
+        { id: 'overview', label: 'Overview', render: renderOverview },
+        { id: 'itinerary', label: 'Itinerary', render: renderItinerary },
+        { id: 'delegation', label: 'Delegation', render: renderDelegation },
+        { id: 'logistics', label: 'Logistics', render: renderLogistics },
+        { id: 'perdiem', label: 'Per Diem', render: renderPerDiem },
+        { id: 'expenses', label: 'Expenses', render: renderExpenses }
+      ];
+
+      if (!tripData.delegation || !tripData.delegation.length) tabs = tabs.filter(t => t.id !== 'delegation');
+      if (!tripData.logistics || !tripData.logistics.length) tabs = tabs.filter(t => t.id !== 'logistics');
+      if (!tripData.per_diem || !tripData.per_diem.length) tabs = tabs.filter(t => t.id !== 'perdiem');
+
+      const tabContainer = document.getElementById('tabs-container');
+      tabContainer.innerHTML = '';
+      tabs.forEach(function (tab, index) {
+        const btn = document.createElement('button');
+        btn.className = 'tab-btn' + (index === 0 ? ' active' : '');
+        btn.innerText = tab.label;
+        btn.onclick = function () { switchTab(tab.id, tabs); };
+        tabContainer.appendChild(btn);
+      });
+
+      switchTab(tabs[0].id, tabs);
+    }
+
+    function switchTab(tabId, tabs) {
+      document.querySelectorAll('.tab-btn').forEach(btn => btn.classList.remove('active'));
+      const tabIndex = tabs.findIndex(t => t.id === tabId);
+      document.querySelectorAll('.tab-btn')[tabIndex].classList.add('active');
+      document.getElementById('content').innerHTML = tabs[tabIndex].render(tripData);
+    }
+
+    // --- RENDERERS ---
+
+    function renderOverview(data) {
+      return '<div class="card"><div class="card-header"><div class="card-title">Trip Overview</div></div>' +
+        '<div class="data-row"><div class="data-label">Destination</div><div class="data-value">' + (data.destination || '—') + '</div></div>' +
+        '<div class="data-row"><div class="data-label">Status</div><div class="data-value"><span class="badge badge-accent">' + (data.status || 'Draft') + '</span></div></div></div>';
+    }
+
+    function renderItinerary(data) {
+      let html = '<div class="card"><div class="card-header"><div class="card-title">Itinerary</div></div>';
+      if (!data.itinerary || !data.itinerary.length) return html + '<p>No itinerary items.</p></div>';
+      data.itinerary.forEach(function (item) {
+        html += '<div class="timeline-item"><div class="timeline-time">' + (item.date || '') + ' • ' + (item.time || '') + '</div>' +
+          '<div class="timeline-desc">' + (item.description || '') + '</div><div class="timeline-loc">' + (item.location || '') + '</div></div>';
+      });
+      return html + '</div>';
+    }
+
+    function renderDelegation(data) {
+      let html = '<div class="card"><div class="card-header"><div class="card-title">Delegation</div></div>';
+      data.delegation.forEach(function (p) {
+        html += '<div class="data-row"><div style="flex:1"><strong>' + (p.name || '') + '</strong><br><span style="color:var(--text-muted)">' + (p.role || '') + '</span></div>' +
+          '<div style="text-align:right">' + (p.phone || '') + '<br>' + (p.email || '') + '</div></div>';
+      });
+      return html + '</div>';
+    }
+
+    function renderLogistics(data) {
+      let html = '<div class="card"><div class="card-header"><div class="card-title">Logistics</div></div>';
+      data.logistics.forEach(function (v) {
+        html += '<div style="margin-bottom:16px"><strong>' + (v.venue_name || '') + '</strong><br>' + (v.address || '') + '<br>WiFi: ' + (v.wifi_ssid || '') + ' / ' + (v.wifi_password || '') + '</div>';
+      });
+      return html + '</div>';
+    }
+
+    function renderPerDiem(data) {
+      let html = '<div class="card"><div class="card-header"><div class="card-title">Per Diem</div></div>';
+      data.per_diem.forEach(function (p) {
+        html += '<div class="data-row"><div style="flex:1"><strong>' + (p.traveler_name || '') + '</strong><br>' + (p.days || 0) + ' days × ' + (p.daily_rate || 0) + '</div>' +
+          '<div style="text-align:right;color:var(--accent);font-weight:700">' + (p.total_allowance || 0) + ' ' + (p.currency || '') + '</div></div>';
+      });
+      return html + '</div>';
+    }
+
+    function renderExpenses(data) {
+      // Build traveler dropdown options
+      const travelers = (data.delegation || []).map(function (d) { return d.name; });
+      const travelerOptions = travelers.map(function (t) {
+        return '<option value="' + t + '">' + t + '</option>';
+      }).join('');
+
+      const today = new Date().toISOString().slice(0, 10);
+
+      let html = '<div class="card">';
+      html += '<div class="card-header"><div class="card-title">Submit an Expense</div></div>';
+      html += '<div id="expense-alert-container"></div>';
+
+      html += '<form id="expense-form" onsubmit="submitExpense(event)">';
+
+      // Traveler
+      html += '<div class="form-group"><label>Traveler *</label>';
+      html += '<select id="exp-traveler" required><option value="">Select traveler...</option>' + travelerOptions + '</select></div>';
+
+      // Date + Amount
+      html += '<div class="form-row">';
+      html += '<div class="form-group"><label>Date *</label><input type="date" id="exp-date" value="' + today + '" required></div>';
+      html += '<div class="form-group"><label>Amount *</label><input type="number" id="exp-amount" step="0.01" min="0" required placeholder="0.00"></div>';
+      html += '</div>';
+
+      // Currency + Category
+      html += '<div class="form-row">';
+      html += '<div class="form-group"><label>Currency *</label><select id="exp-currency" required><option>USD</option><option>EUR</option><option>GBP</option><option>NGN</option><option>KES</option><option>ZAR</option></select></div>';
+      html += '<div class="form-group"><label>Category *</label><select id="exp-category" required><option>Meals</option><option>Transport</option><option>Lodging</option><option>Incidentals</option><option>Entertainment</option><option>Other</option></select></div>';
+      html += '</div>';
+
+      // Description
+      html += '<div class="form-group"><label>Description *</label><input type="text" id="exp-description" required placeholder="e.g. Taxi from Heathrow to Mayfair"></div>';
+
+      // Receipt upload
+      html += '<div class="form-group"><label>Receipt *</label>';
+      html += '<input type="file" id="exp-receipt" accept="image/*,.pdf" required onchange="handleFileSelect(event)" style="display:none">';
+      html += '<div class="file-input" onclick="document.getElementById(\'exp-receipt\').click()" id="file-display">📷 Tap to attach a receipt photo or PDF</div>';
+      html += '<div style="font-size:12px; color:var(--text-muted); margin-top:4px;">Max ' + MAX_FILE_SIZE_MB + 'MB. Take a photo with your camera or choose from your files.</div>';
+      html += '</div>';
+
+      // Notes
+      html += '<div class="form-group"><label>Notes (optional)</label><textarea id="exp-notes" placeholder="Anything the EA should know"></textarea></div>';
+
+      // Submit
+      html += '<button type="submit" class="btn-submit" id="exp-submit-btn">Submit Expense</button>';
+      html += '</form>';
+      html += '</div>';
+
+      // Existing approved expenses
+      if (data.expenses && data.expenses.length) {
+        html += '<div class="card"><div class="card-header"><div class="card-title">Approved Expenses</div></div>';
+        data.expenses.forEach(function (ex) {
+          let badge = ex.receipt_url ? '<a href="' + ex.receipt_url + '" target="_blank" class="badge badge-accent" style="margin-left:8px;text-decoration:none">🧾 Receipt</a>' : '';
+          html += '<div class="data-row"><div style="flex:1"><strong>' + (ex.description || '') + '</strong>' + badge + '<br><span style="color:var(--text-muted)">' + (ex.traveler_name || '') + ' · ' + (ex.date || '') + '</span></div>' +
+            '<div style="text-align:right;font-weight:700">' + (ex.amount || 0) + ' ' + (ex.currency || '') + '</div></div>';
+        });
+        html += '</div>';
+      }
+
+      return html;
+    }
+
+    // --- FILE HANDLING ---
+
+    let selectedFile = null;
+
+    function handleFileSelect(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const sizeMB = file.size / (1024 * 1024);
+      if (sizeMB > MAX_FILE_SIZE_MB) {
+        alert('File too large (' + sizeMB.toFixed(1) + 'MB). Max ' + MAX_FILE_SIZE_MB + 'MB. Please compress or take a smaller photo.');
+        e.target.value = '';
+        return;
+      }
+
+      selectedFile = file;
+      document.getElementById('file-display').innerHTML =
+        '✅ ' + file.name + ' (' + sizeMB.toFixed(1) + 'MB)';
+    }
+
+    // --- SUBMISSION ---
+
+    function submitExpense(e) {
+      e.preventDefault();
+
+      const btn = document.getElementById('exp-submit-btn');
+      const alertContainer = document.getElementById('expense-alert-container');
+
+      btn.disabled = true;
+      btn.innerText = "Submitting...";
+      alertContainer.innerHTML = "";
+
+      const expense = {
+        traveler: document.getElementById('exp-traveler').value,
+        date: document.getElementById('exp-date').value,
+        amount: parseFloat(document.getElementById('exp-amount').value),
+        currency: document.getElementById('exp-currency').value,
+        category: document.getElementById('exp-category').value,
+        description: document.getElementById('exp-description').value,
+        notes: document.getElementById('exp-notes').value,
+      };
+
+      // Convert file to base64 if present
+      const proceed = function (receiptBase64, receiptFilename, receiptMime) {
+        expense.receipt_base64 = receiptBase64;
+        expense.receipt_filename = receiptFilename;
+        expense.receipt_mime = receiptMime;
+
+        fetch(APPS_SCRIPT_URL, {
+          method: 'POST',
+          headers: { 'Content-Type': 'text/plain;charset=utf-8' },
+          body: JSON.stringify({
+            action: 'submit_expense',
+            tripId: tripId,
+            password: tripPassword,
+            expense: expense
+          })
+        })
+          .then(r => r.json())
+          .then(data => {
+            if (data.error) {
+              alertContainer.innerHTML = '<div class="alert alert-error">❌ ' + data.error + '</div>';
+              btn.disabled = false;
+              btn.innerText = "Submit Expense";
+            } else {
+              alertContainer.innerHTML = '<div class="alert alert-success">✅ Expense submitted! Your EA will review it.</div>';
+              // Reset form
+              document.getElementById('expense-form').reset();
+              document.getElementById('file-display').innerHTML = '📷 Tap to attach a receipt photo or PDF';
+              selectedFile = null;
+              btn.disabled = false;
+              btn.innerText = "Submit Expense";
+            }
+          })
+          .catch(err => {
+            alertContainer.innerHTML = '<div class="alert alert-error">❌ Connection error. Please try again.</div>';
+            btn.disabled = false;
+            btn.innerText = "Submit Expense";
+          });
+      };
+
+      if (selectedFile) {
+        const reader = new FileReader();
+        reader.onload = function (ev) {
+          proceed(ev.target.result, selectedFile.name, selectedFile.type);
+        };
+        reader.readAsDataURL(selectedFile);
+      } else {
+        proceed(null, null, null);
+      }
+    }
+  </script>
+</body>
+
+</html>
